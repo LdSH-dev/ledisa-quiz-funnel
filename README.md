@@ -68,6 +68,30 @@ CSS custom properties live in `css/tokens.css`. Colors were pulled from the live
 | `--font-heading` | `'Fraunces', Georgia, serif` | Stand-in for Ledisa's licensed "Recoleta Alt Medium" |
 | `--font-body` | system UI stack | Native system fonts |
 
+## Analytics & tracking
+
+Tracking is gated by a first-visit cookie banner. On **Accept all**, the Google Tag Manager container defined by `GTM_CONTAINER_ID` is loaded; on **Reject**, no tracking script is loaded at all. The choice is persisted in `localStorage` for 12 months, and users can revisit it via the "Cookie preferences" link in the bottom-left corner.
+
+Once GTM is loaded, four semantic `dataLayer` events fire during the funnel and can be mapped to any downstream pixel/analytics from the GTM UI:
+
+| Event | When it fires | Payload |
+| --- | --- | --- |
+| `quiz_started` | Quiz init | `total_steps` |
+| `quiz_step_answered` | Each option selected | `question_id`, `answer`, `step`, `total_steps` |
+| `quiz_lead_captured` | Successful form submit | `marketing_consent` |
+| `quiz_completed` | Successful form submit | `total_answers` |
+
+### Adding Meta Pixel via GTM (no code changes)
+
+1. GTM → **Tags → New → Tag Type: Facebook Pixel** (or via **Community Template Gallery**)
+2. Paste your `FB_PIXEL_ID`
+3. Set the trigger to **All Pages** for `PageView`, and add extra triggers for the semantic events:
+   - `quiz_lead_captured` → Meta `Lead` event
+   - `quiz_completed` → Meta `CompleteRegistration` event
+4. Publish the GTM container
+
+Same pattern applies for GA4, TikTok Pixel, LinkedIn Insight Tag, etc. — none of them need code changes on this side.
+
 ## Performance decisions
 
 - **Inlined critical CSS** — tokens + base layout + progress bar are inlined in `<head>` so first paint doesn't wait on a stylesheet request.
