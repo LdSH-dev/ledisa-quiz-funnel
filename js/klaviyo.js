@@ -56,10 +56,13 @@ function buildKlaviyoPayload(lead, answers, listId) {
   properties.quiz_source = 'Ledisa Quiz Funnel';
   profileAttributes.properties = properties;
 
+  var consentedAt = new Date().toISOString();
+
   profileAttributes.subscriptions = {
     email: {
       marketing: {
         consent: 'SUBSCRIBED',
+        consented_at: consentedAt,
       },
     },
   };
@@ -68,9 +71,11 @@ function buildKlaviyoPayload(lead, answers, listId) {
     profileAttributes.subscriptions.sms = {
       marketing: {
         consent: 'SUBSCRIBED',
+        consented_at: consentedAt,
       },
       transactional: {
         consent: 'SUBSCRIBED',
+        consented_at: consentedAt,
       },
     };
   }
