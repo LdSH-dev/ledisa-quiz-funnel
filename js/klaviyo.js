@@ -1,5 +1,5 @@
 var KLAVIYO_ENDPOINT = 'https://a.klaviyo.com/client/subscriptions/';
-var KLAVIYO_API_REVISION = '2024-10-15';
+var KLAVIYO_API_REVISION = '2026-07-15';
 
 function isKlaviyoConfigured() {
   var config = window.CONFIG || {};
@@ -55,6 +55,14 @@ function buildKlaviyoPayload(lead, answers, listId) {
   properties.quiz_completed_at = new Date().toISOString();
   properties.quiz_source = 'Ledisa Quiz Funnel';
   profileAttributes.properties = properties;
+
+  profileAttributes.subscriptions = {
+    email: {
+      marketing: {
+        consent: 'SUBSCRIBED',
+      },
+    },
+  };
 
   return {
     data: {
