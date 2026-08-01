@@ -13,6 +13,12 @@ jobs:
     name: PR preview vs main production
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout PR head
+        # Provides the git context LHCI needs for its GitHub status check.
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
       - name: Wait for Vercel preview to be ready
         id: vercel-preview
         uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
