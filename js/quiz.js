@@ -217,6 +217,9 @@ function handleLeadSubmit(event) {
   QuizState.setLead('email', email.trim());
   QuizState.setLead('phone', phone.trim());
 
+  var state = QuizState.get();
+  subscribeLeadToKlaviyo(state.lead, state.answers);
+
   window.location.href = window.CONFIG.REDIRECT_URL;
 }
 
