@@ -116,12 +116,23 @@ function updateProgress(stepIndex) {
   if (text) text.textContent = 'Step ' + (stepIndex + 1) + ' of ' + totalSteps;
 }
 
-function goToStep(index) {
+function goToStep(index, direction) {
   var target = qs('#step-' + (index + 1));
   if (!target) return;
   var current = qs('#step-viewport .step.active');
-  transitionToStep(current, target);
+  transitionToStep(current, target, direction);
   updateProgress(index);
+
+  var backBtn = qs('#back-btn');
+  if (backBtn) backBtn.hidden = index === 0;
+}
+
+function handleBackClick() {
+  var current = qs('#step-viewport .step.active');
+  if (!current) return;
+  var currentIndex = parseInt(current.getAttribute('data-step'), 10) - 1;
+  if (currentIndex <= 0) return;
+  goToStep(currentIndex - 1, 'back');
 }
 
 function createConsentField() {
@@ -306,6 +317,9 @@ function initQuiz() {
   if (viewport) {
     viewport.addEventListener('click', handleOptionClick);
   }
+
+  var backBtn = qs('#back-btn');
+  if (backBtn) backBtn.addEventListener('click', handleBackClick);
 
   pushDataLayerEvent('quiz_started', {
     total_steps: window.CONFIG.TOTAL_STEPS,
