@@ -122,6 +122,31 @@ function goToStep(index) {
   updateProgress(index);
 }
 
+function createConsentField() {
+  var wrap = createEl('div', { class: 'lead-form-consent' });
+  var input = createEl('input', {
+    type: 'checkbox',
+    id: 'lead-marketing-consent',
+    name: 'marketing_consent',
+  });
+  var label = createEl('label', { for: 'lead-marketing-consent' });
+  label.appendChild(
+    document.createTextNode('I agree to receive marketing emails from Ledisa. See our '),
+  );
+  label.appendChild(
+    createEl('a', {
+      href: 'https://ledisa.com/pages/privacy-policy',
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      text: 'Privacy Policy',
+    }),
+  );
+  label.appendChild(document.createTextNode('.'));
+  wrap.appendChild(input);
+  wrap.appendChild(label);
+  return wrap;
+}
+
 function createFormField(labelText, name, type, autocomplete, inputmode) {
   var wrap = createEl('div', { class: 'lead-form-field' });
   var label = createEl('label', { for: 'lead-' + name, text: labelText });
@@ -164,6 +189,7 @@ function renderLeadStep() {
   form.appendChild(createFormField('Full name', 'name', 'text', 'name'));
   form.appendChild(createFormField('Email', 'email', 'email', 'email', 'email'));
   form.appendChild(createFormField('Phone', 'phone', 'tel', 'tel', 'tel'));
+  form.appendChild(createConsentField());
   form.appendChild(createEl('button', {
     type: 'submit',
     class: 'btn btn-primary',
@@ -213,12 +239,17 @@ function handleLeadSubmit(event) {
 
   if (!valid) return;
 
+  var marketingConsent = !!form.elements['marketing_consent'].checked;
+
   QuizState.setLead('name', name.trim());
   QuizState.setLead('email', email.trim());
   QuizState.setLead('phone', phone.trim());
+  QuizState.setLead('marketing_consent', marketingConsent);
 
-  var state = QuizState.get();
-  subscribeLeadToKlaviyo(state.lead, state.answers);
+  if (marketingConsent) {
+    var state = QuizState.get();
+    subscribeLeadToKlaviyo(state.lead, state.answers);
+  }
 
   window.location.href = window.CONFIG.REDIRECT_URL;
 }
