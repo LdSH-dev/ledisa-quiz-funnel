@@ -122,6 +122,102 @@ function goToStep(index) {
   updateProgress(index);
 }
 
+function createFormField(labelText, name, type, autocomplete, inputmode) {
+  var wrap = createEl('div', { class: 'lead-form-field' });
+  var label = createEl('label', { for: 'lead-' + name, text: labelText });
+  var input = createEl('input', {
+    type: type,
+    id: 'lead-' + name,
+    name: name,
+    autocomplete: autocomplete || 'off',
+    inputmode: inputmode || 'text',
+    required: 'required',
+  });
+  var error = createEl('span', {
+    class: 'error-message',
+    id: 'lead-' + name + '-error',
+    role: 'alert',
+    'aria-live': 'polite',
+  });
+  wrap.appendChild(label);
+  wrap.appendChild(input);
+  wrap.appendChild(error);
+  return wrap;
+}
+
+function renderLeadStep() {
+  var stepEl = createEl('section', {
+    class: 'step',
+    id: 'step-8',
+    'data-step': '8',
+  });
+
+  stepEl.appendChild(createEl('h1', {
+    text: 'Almost there — where should we send your results?',
+  }));
+
+  var form = createEl('form', {
+    class: 'lead-form',
+    id: 'lead-form',
+    novalidate: 'novalidate',
+  });
+  form.appendChild(createFormField('Full name', 'name', 'text', 'name'));
+  form.appendChild(createFormField('Email', 'email', 'email', 'email', 'email'));
+  form.appendChild(createFormField('Phone', 'phone', 'tel', 'tel', 'tel'));
+  form.appendChild(createEl('button', {
+    type: 'submit',
+    class: 'btn btn-primary',
+    text: 'See my results',
+  }));
+
+  stepEl.appendChild(form);
+  qs('#step-viewport').appendChild(stepEl);
+
+  form.addEventListener('submit', handleLeadSubmit);
+  return stepEl;
+}
+
+function setFieldError(name, message) {
+  var input = qs('#lead-' + name);
+  var errorEl = qs('#lead-' + name + '-error');
+  if (input) input.setAttribute('aria-invalid', message ? 'true' : 'false');
+  if (errorEl) errorEl.textContent = message || '';
+}
+
+function handleLeadSubmit(event) {
+  event.preventDefault();
+  var form = event.target;
+  var name = form.elements['name'].value;
+  var email = form.elements['email'].value;
+  var phone = form.elements['phone'].value;
+
+  var valid = true;
+  if (!validateName(name)) {
+    setFieldError('name', 'Please enter your full name.');
+    valid = false;
+  } else {
+    setFieldError('name', '');
+  }
+  if (!validateEmail(email)) {
+    setFieldError('email', 'Please enter a valid email address.');
+    valid = false;
+  } else {
+    setFieldError('email', '');
+  }
+  if (!validatePhone(phone)) {
+    setFieldError('phone', 'Please enter a valid phone number (10+ digits).');
+    valid = false;
+  } else {
+    setFieldError('phone', '');
+  }
+
+  if (!valid) return;
+
+  QuizState.setLead('name', name.trim());
+  QuizState.setLead('email', email.trim());
+  QuizState.setLead('phone', phone.trim());
+}
+
 function handleOptionClick(event) {
   var button = event.target.closest('.option-card');
   if (!button) return;
@@ -138,6 +234,7 @@ function initQuiz() {
   QUESTIONS.forEach(function (question, index) {
     renderStep(question, index);
   });
+  renderLeadStep();
 
   var track = qs('.progress-track');
   if (track) {
