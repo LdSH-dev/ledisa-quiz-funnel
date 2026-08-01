@@ -56,29 +56,17 @@ function buildKlaviyoPayload(lead, answers, listId) {
   properties.quiz_source = 'Ledisa Quiz Funnel';
   profileAttributes.properties = properties;
 
-  var consentedAt = new Date().toISOString();
-
+  // Phone is stored as a profile attribute above but intentionally not opted
+  // into SMS marketing or transactional messages — SMS is out of scope for
+  // this funnel and the consent checkbox only covers email.
   profileAttributes.subscriptions = {
     email: {
       marketing: {
         consent: 'SUBSCRIBED',
-        consented_at: consentedAt,
+        consented_at: new Date().toISOString(),
       },
     },
   };
-
-  if (phone) {
-    profileAttributes.subscriptions.sms = {
-      marketing: {
-        consent: 'SUBSCRIBED',
-        consented_at: consentedAt,
-      },
-      transactional: {
-        consent: 'SUBSCRIBED',
-        consented_at: consentedAt,
-      },
-    };
-  }
 
   return {
     data: {

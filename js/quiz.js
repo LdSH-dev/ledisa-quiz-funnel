@@ -131,9 +131,7 @@ function createConsentField() {
   });
   var label = createEl('label', { for: 'lead-marketing-consent' });
   label.appendChild(
-    document.createTextNode(
-      'I agree to receive marketing emails and text messages from Ledisa. See our ',
-    ),
+    document.createTextNode('I agree to receive marketing emails from Ledisa. See our '),
   );
   label.appendChild(
     createEl('a', {
