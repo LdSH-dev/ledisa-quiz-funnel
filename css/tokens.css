@@ -1,0 +1,29 @@
+:root {
+  --color-bg: #FFFAF4;
+  --color-text: #121212;
+  --color-text-muted: rgba(18, 18, 18, 0.75);
+  --color-button-bg: #121212;
+  --color-button-text: #FFFFFF;
+  --color-button-secondary-bg: #FFFAF4;
+  --color-button-secondary-text: #121212;
+  --color-border: rgba(18, 18, 18, 0.12);
+  --color-accent: #FFC074;
+  --color-teal: #0DE6D3;
+
+  --font-heading: 'Fraunces', Georgia, serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-pill: 999px;
+
+  --transition-fast: 180ms ease;
+  --transition-step: 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
