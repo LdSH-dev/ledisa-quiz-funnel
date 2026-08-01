@@ -246,10 +246,18 @@ function handleLeadSubmit(event) {
   QuizState.setLead('phone', phone.trim());
   QuizState.setLead('marketing_consent', marketingConsent);
 
+  var state = QuizState.get();
+
   if (marketingConsent) {
-    var state = QuizState.get();
     subscribeLeadToKlaviyo(state.lead, state.answers);
   }
+
+  pushDataLayerEvent('quiz_lead_captured', {
+    marketing_consent: marketingConsent,
+  });
+  pushDataLayerEvent('quiz_completed', {
+    total_answers: Object.keys(state.answers).length,
+  });
 
   window.location.href = window.CONFIG.REDIRECT_URL;
 }
@@ -263,6 +271,14 @@ function handleOptionClick(event) {
 
   var currentStep = button.closest('.step');
   var currentIndex = parseInt(currentStep.getAttribute('data-step'), 10) - 1;
+
+  pushDataLayerEvent('quiz_step_answered', {
+    question_id: questionId,
+    answer: value,
+    step: currentIndex + 1,
+    total_steps: window.CONFIG.TOTAL_STEPS,
+  });
+
   goToStep(currentIndex + 1);
 }
 
@@ -288,6 +304,10 @@ function initQuiz() {
   if (viewport) {
     viewport.addEventListener('click', handleOptionClick);
   }
+
+  pushDataLayerEvent('quiz_started', {
+    total_steps: window.CONFIG.TOTAL_STEPS,
+  });
 }
 
 if (document.readyState === 'loading') {
