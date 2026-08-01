@@ -40,7 +40,9 @@ function validateEmail(value) {
 function validatePhone(value) {
   if (typeof value !== 'string') return false;
   var digits = value.replace(/\D/g, '');
-  return digits.length >= 10 && digits.length <= 15;
+  // 8-digit floor covers European mobile lengths (ES/PT/FR = 9 nat., some 8-digit fixed).
+  // 15-digit ceiling matches E.164 maximum.
+  return digits.length >= 8 && digits.length <= 15;
 }
 
 function validateName(value) {
