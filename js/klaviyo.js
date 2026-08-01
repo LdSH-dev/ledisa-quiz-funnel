@@ -64,6 +64,17 @@ function buildKlaviyoPayload(lead, answers, listId) {
     },
   };
 
+  if (phone) {
+    profileAttributes.subscriptions.sms = {
+      marketing: {
+        consent: 'SUBSCRIBED',
+      },
+      transactional: {
+        consent: 'SUBSCRIBED',
+      },
+    };
+  }
+
   return {
     data: {
       type: 'subscription',
