@@ -272,7 +272,19 @@ function handleLeadSubmit(event) {
     total_answers: Object.keys(state.answers).length,
   });
 
-  window.location.href = window.CONFIG.REDIRECT_URL;
+  var submitBtn = form.querySelector('button[type="submit"]');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.dataset.originalLabel = submitBtn.textContent;
+    submitBtn.textContent = 'Sending…';
+    submitBtn.classList.add('is-loading');
+  }
+
+  // Brief hold so the loading state is visible and Klaviyo's keepalive
+  // request has a moment to hit the wire before navigation.
+  setTimeout(function () {
+    window.location.href = window.CONFIG.REDIRECT_URL;
+  }, 600);
 }
 
 function handleOptionClick(event) {
