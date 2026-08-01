@@ -105,6 +105,35 @@ function renderStep(question, index) {
   return stepEl;
 }
 
+function updateProgress(stepIndex) {
+  var totalSteps = window.CONFIG.TOTAL_STEPS;
+  var pct = ((stepIndex + 1) / totalSteps) * 100;
+  var fill = qs('#progress-fill');
+  if (fill) fill.style.width = pct + '%';
+  var track = qs('.progress-track');
+  if (track) track.setAttribute('aria-valuenow', String(stepIndex + 1));
+}
+
+function goToStep(index) {
+  var target = qs('#step-' + (index + 1));
+  if (!target) return;
+  var current = qs('#step-viewport .step.active');
+  transitionToStep(current, target);
+  updateProgress(index);
+}
+
+function handleOptionClick(event) {
+  var button = event.target.closest('.option-card');
+  if (!button) return;
+  var questionId = button.getAttribute('data-question-id');
+  var value = button.getAttribute('data-value');
+  QuizState.setAnswer(questionId, value);
+
+  var currentStep = button.closest('.step');
+  var currentIndex = parseInt(currentStep.getAttribute('data-step'), 10) - 1;
+  goToStep(currentIndex + 1);
+}
+
 function initQuiz() {
   QUESTIONS.forEach(function (question, index) {
     renderStep(question, index);
@@ -118,6 +147,13 @@ function initQuiz() {
     track.setAttribute('aria-valuenow', '1');
     track.setAttribute('aria-label', 'Quiz progress');
     track.removeAttribute('aria-hidden');
+  }
+
+  updateProgress(0);
+
+  var viewport = qs('#step-viewport');
+  if (viewport) {
+    viewport.addEventListener('click', handleOptionClick);
   }
 }
 
