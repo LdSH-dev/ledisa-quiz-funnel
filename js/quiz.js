@@ -112,6 +112,8 @@ function updateProgress(stepIndex) {
   if (fill) fill.style.width = pct + '%';
   var track = qs('.progress-track');
   if (track) track.setAttribute('aria-valuenow', String(stepIndex + 1));
+  var text = qs('#progress-text');
+  if (text) text.textContent = 'Step ' + (stepIndex + 1) + ' of ' + totalSteps;
 }
 
 function goToStep(index) {
