@@ -216,6 +216,8 @@ function handleLeadSubmit(event) {
   QuizState.setLead('name', name.trim());
   QuizState.setLead('email', email.trim());
   QuizState.setLead('phone', phone.trim());
+
+  window.location.href = window.CONFIG.REDIRECT_URL;
 }
 
 function handleOptionClick(event) {
