@@ -94,6 +94,7 @@
 
   <script defer src="js/config.js"></script>
   <script defer src="js/utils.js"></script>
+  <script defer src="js/quiz.js"></script>
 </head>
 <body>
   <div class="quiz-app">
@@ -103,7 +104,8 @@
 
     <main class="step-viewport" id="step-viewport">
       <section class="step active" id="step-1" data-step="1">
-        <h1>Find the right Ledisa protocol for you.</h1>
+        <!-- h1 text must match QUESTIONS[0].question in js/quiz.js — kept static so it renders as LCP without JS. -->
+        <h1>What's your main goal right now?</h1>
       </section>
     </main>
   </div>
