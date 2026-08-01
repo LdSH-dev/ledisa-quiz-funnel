@@ -96,6 +96,7 @@
   <!-- Generated from .env by scripts/build-config.js; harmlessly 404s if not built yet. -->
   <script defer src="js/config.local.js"></script>
   <script defer src="js/utils.js"></script>
+  <script defer src="js/consent.js"></script>
   <script defer src="js/klaviyo.js"></script>
   <script defer src="js/quiz.js"></script>
 </head>
@@ -112,5 +113,24 @@
       </section>
     </main>
   </div>
+
+  <div id="cookie-banner" class="cookie-banner" role="dialog" aria-labelledby="cookie-banner-title" hidden>
+    <div class="cookie-banner-inner">
+      <div class="cookie-banner-text">
+        <p id="cookie-banner-title" class="cookie-banner-title">We use cookies</p>
+        <p class="cookie-banner-body">
+          We use analytics and marketing cookies to understand how visitors use our funnel and to improve future experiences.
+          You can accept all or reject non-essential ones. See our
+          <a href="https://ledisa.com/pages/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+        </p>
+      </div>
+      <div class="cookie-banner-actions">
+        <button type="button" class="btn btn-secondary" data-consent-action="reject">Reject</button>
+        <button type="button" class="btn btn-primary" data-consent-action="accept">Accept all</button>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="cookie-preferences-btn" id="cookie-preferences-btn" hidden>Cookie preferences</button>
 </body>
 </html>
