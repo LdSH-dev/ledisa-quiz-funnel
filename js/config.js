@@ -1,0 +1,8 @@
+window.CONFIG = {
+  GTM_CONTAINER_ID: 'GTM-XXXXXXX',
+  FB_PIXEL_ID: '0000000000000000',
+  KLAVIYO_PUBLIC_KEY: 'XXXXXX',
+  KLAVIYO_LIST_ID: 'XXXXXX',
+  REDIRECT_URL: 'https://ledisa.com/products/glp-1',
+  TOTAL_STEPS: 8,
+};
