@@ -53,10 +53,10 @@ var QUESTIONS = [
     id: 'weight_target',
     question: 'How much weight are you looking to lose?',
     options: [
-      'Under 10 lbs',
-      '10–25 lbs',
-      '25–50 lbs',
-      '50+ lbs',
+      'Under 5 kg',
+      '5–15 kg',
+      '15–25 kg',
+      '25+ kg',
     ],
   },
   {
@@ -205,7 +205,7 @@ function handleLeadSubmit(event) {
     setFieldError('email', '');
   }
   if (!validatePhone(phone)) {
-    setFieldError('phone', 'Please enter a valid phone number (10+ digits).');
+    setFieldError('phone', 'Please enter a valid phone number.');
     valid = false;
   } else {
     setFieldError('phone', '');
