@@ -3,3 +3,6 @@ node_modules/
 dist/
 .env
 *.log
+
+# Generated from .env by scripts/build-config.js
+js/config.local.js

@@ -4,18 +4,31 @@ A performance-focused, plain HTML/CSS/JS quiz funnel for Ledisa. No frameworks, 
 
 ## Running locally
 
-There is no build step. Either:
-
-- Open `index.html` directly in a browser, or
-- Serve the folder statically:
+Copy the env template and fill in your real values:
 
 ```bash
+cp .env.example .env
+# edit .env with your real Klaviyo/GTM/Pixel IDs
+```
+
+Then either:
+
+```bash
+npm run dev            # generates js/config.local.js from .env, then serves via npx serve
+```
+
+Or run the two steps by hand:
+
+```bash
+npm run build:config   # regenerate js/config.local.js after editing .env
 npx serve .
 ```
 
+If you skip the config build, the site still renders — `window.CONFIG` just keeps the placeholder values from `js/config.js` and any request to Klaviyo will no-op with a console warning.
+
 ## Configuration
 
-All third-party IDs and tunable values live in `js/config.js` as properties on `window.CONFIG`:
+All third-party IDs and tunable values live in `.env` and are loaded via `scripts/build-config.js` → `js/config.local.js`, which overrides the placeholder defaults in `js/config.js` at runtime.
 
 - `GTM_CONTAINER_ID` — Google Tag Manager container
 - `FB_PIXEL_ID` — Meta/Facebook Pixel
@@ -23,6 +36,8 @@ All third-party IDs and tunable values live in `js/config.js` as properties on `
 - `KLAVIYO_LIST_ID` — Klaviyo list to subscribe leads to
 - `REDIRECT_URL` — where to send users after they finish the funnel
 - `TOTAL_STEPS` — total number of quiz steps
+
+`.env` and `js/config.local.js` are both git-ignored so real keys never land in the repo.
 
 ## Design tokens
 
