@@ -56,6 +56,16 @@ function buildKlaviyoPayload(lead, answers, listId) {
   properties.quiz_source = 'Ledisa Quiz Funnel';
   profileAttributes.properties = properties;
 
+  // Without an explicit SUBSCRIBED consent, Klaviyo accepts the request (202)
+  // and creates the profile but does not add it to the list.
+  profileAttributes.subscriptions = {
+    email: {
+      marketing: {
+        consent: 'SUBSCRIBED',
+      },
+    },
+  };
+
   return {
     data: {
       type: 'subscription',
