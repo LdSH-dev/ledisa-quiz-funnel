@@ -53,14 +53,30 @@ jobs:
             const previewUrl = process.env.PREVIEW_URL;
             const prodUrl = process.env.PROD_URL;
 
-            const pick = (url) =>
-              manifest.find((m) => m.url === url && m.isRepresentativeRun)
-              || manifest.find((m) => m.url === url);
+            // wait-for-vercel-preview returns URLs without a trailing slash,
+            // but Lighthouse stores them with one. Normalize both sides.
+            const normalize = (u) => (u || '').replace(/\/+$/, '') + '/';
+
+            const pick = (url) => {
+              const target = normalize(url);
+              return manifest.find((m) => normalize(m.url) === target && m.isRepresentativeRun)
+                || manifest.find((m) => normalize(m.url) === target);
+            };
+
+            const getLink = (url) => {
+              const target = normalize(url);
+              const entry = Object.entries(links).find(([k]) => normalize(k) === target);
+              return entry ? entry[1] : '#';
+            };
 
             const preview = pick(previewUrl);
             const prod = pick(prodUrl);
 
             if (!preview || !prod) {
+              console.log('Preview URL input:', previewUrl);
+              console.log('Prod URL input:', prodUrl);
+              console.log('Manifest URLs:', manifest.map((m) => m.url));
+              console.log('Links keys:', Object.keys(links));
               core.setFailed('Could not resolve representative Lighthouse run for one of the URLs.');
               return;
             }
@@ -90,7 +106,7 @@ jobs:
               '| --- | ---: | ---: | :---: |',
               ...rows,
               '',
-              `[Preview report](${links[previewUrl] || '#'}) · [Main report](${links[prodUrl] || '#'})`,
+              `[Preview report](${getLink(previewUrl)}) · [Main report](${getLink(prodUrl)})`,
             ].join('\n');
 
             core.setOutput('body', body);
