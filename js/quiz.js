@@ -112,14 +112,27 @@ function updateProgress(stepIndex) {
   if (fill) fill.style.width = pct + '%';
   var track = qs('.progress-track');
   if (track) track.setAttribute('aria-valuenow', String(stepIndex + 1));
+  var text = qs('#progress-text');
+  if (text) text.textContent = 'Step ' + (stepIndex + 1) + ' of ' + totalSteps;
 }
 
-function goToStep(index) {
+function goToStep(index, direction) {
   var target = qs('#step-' + (index + 1));
   if (!target) return;
   var current = qs('#step-viewport .step.active');
-  transitionToStep(current, target);
+  transitionToStep(current, target, direction);
   updateProgress(index);
+
+  var backBtn = qs('#back-btn');
+  if (backBtn) backBtn.hidden = index === 0;
+}
+
+function handleBackClick() {
+  var current = qs('#step-viewport .step.active');
+  if (!current) return;
+  var currentIndex = parseInt(current.getAttribute('data-step'), 10) - 1;
+  if (currentIndex <= 0) return;
+  goToStep(currentIndex - 1, 'back');
 }
 
 function createConsentField() {
@@ -259,7 +272,19 @@ function handleLeadSubmit(event) {
     total_answers: Object.keys(state.answers).length,
   });
 
-  window.location.href = window.CONFIG.REDIRECT_URL;
+  var submitBtn = form.querySelector('button[type="submit"]');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.dataset.originalLabel = submitBtn.textContent;
+    submitBtn.textContent = 'Sending…';
+    submitBtn.classList.add('is-loading');
+  }
+
+  // Brief hold so the loading state is visible and Klaviyo's keepalive
+  // request has a moment to hit the wire before navigation.
+  setTimeout(function () {
+    window.location.href = window.CONFIG.REDIRECT_URL;
+  }, 600);
 }
 
 function handleOptionClick(event) {
@@ -304,6 +329,9 @@ function initQuiz() {
   if (viewport) {
     viewport.addEventListener('click', handleOptionClick);
   }
+
+  var backBtn = qs('#back-btn');
+  if (backBtn) backBtn.addEventListener('click', handleBackClick);
 
   pushDataLayerEvent('quiz_started', {
     total_steps: window.CONFIG.TOTAL_STEPS,

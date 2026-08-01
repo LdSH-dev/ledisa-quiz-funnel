@@ -75,8 +75,11 @@ function pushDataLayerEvent(eventName, payload) {
   window.dataLayer.push(event);
 }
 
-function transitionToStep(fromEl, toEl) {
+function transitionToStep(fromEl, toEl, direction) {
   if (!toEl) return;
+
+  var viewport = toEl.parentElement;
+  var dirClass = direction === 'back' ? 'direction-back' : null;
 
   var reduceMotion =
     window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -86,8 +89,11 @@ function transitionToStep(fromEl, toEl) {
       fromEl.classList.remove('active', 'exiting');
     }
     toEl.classList.add('active');
+    if (dirClass && viewport) viewport.classList.remove(dirClass);
     return;
   }
+
+  if (dirClass && viewport) viewport.classList.add(dirClass);
 
   if (fromEl && fromEl !== toEl) {
     fromEl.classList.remove('active');
@@ -97,6 +103,7 @@ function transitionToStep(fromEl, toEl) {
       if (event.target !== fromEl) return;
       fromEl.classList.remove('exiting');
       fromEl.removeEventListener('transitionend', onEnd);
+      if (dirClass && viewport) viewport.classList.remove(dirClass);
     };
     fromEl.addEventListener('transitionend', onEnd);
   }
