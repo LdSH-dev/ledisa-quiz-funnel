@@ -244,6 +244,34 @@ p {
   min-height: 1.15em;
 }
 
+.lead-form-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.lead-form-consent input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--color-text);
+  cursor: pointer;
+}
+
+.lead-form-consent label {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.lead-form-consent a {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
 .lead-form .btn-primary {
   margin-top: var(--space-2);
   width: 100%;
