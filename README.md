@@ -28,16 +28,26 @@ If you skip the config build, the site still renders — `window.CONFIG` just ke
 
 ## Configuration
 
-All third-party IDs and tunable values live in `.env` and are loaded via `scripts/build-config.js` → `js/config.local.js`, which overrides the placeholder defaults in `js/config.js` at runtime.
+All third-party IDs and tunable values are resolved from the environment at build time (either a local `.env` for dev, or the hosting platform's env vars in CI) via `scripts/build-config.js`, which writes `js/config.local.js`. That file `Object.assigns` over the placeholder defaults in `js/config.js` at runtime.
 
 - `GTM_CONTAINER_ID` — Google Tag Manager container
 - `FB_PIXEL_ID` — Meta/Facebook Pixel
-- `KLAVIYO_PUBLIC_KEY` — Klaviyo public API key
+- `KLAVIYO_PUBLIC_KEY` — Klaviyo Site ID / public API key (6-char, e.g. `RmQQ2r` — **not** the `pk_...` private key)
 - `KLAVIYO_LIST_ID` — Klaviyo list to subscribe leads to
 - `REDIRECT_URL` — where to send users after they finish the funnel
 - `TOTAL_STEPS` — total number of quiz steps
 
 `.env` and `js/config.local.js` are both git-ignored so real keys never land in the repo.
+
+## Deploying to Vercel
+
+Vercel doesn't see your local `.env` — set the same keys in the dashboard instead.
+
+1. **Vercel → Project → Settings → Environment Variables** — add each key above for the environments you need (Production, Preview, Development).
+2. **Vercel → Settings → Build & Development Settings** — override the Build Command to `npm run build:config`. Output Directory stays at the default (repo root).
+3. Trigger a redeploy so the new build command runs with the injected env vars.
+
+The build script reads from `process.env` first (which is what Vercel populates from the dashboard) and falls back to `.env` for local dev. Missing keys log a warning but don't fail the build — the deploy still succeeds with placeholder values from `js/config.js`.
 
 ## Design tokens
 
