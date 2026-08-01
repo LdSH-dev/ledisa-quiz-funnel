@@ -51,16 +51,43 @@ function hideBanner() {
   }, delay);
 }
 
+var gtmLoaded = false;
+
+function loadGTM() {
+  if (gtmLoaded) return;
+  var containerId = window.CONFIG && window.CONFIG.GTM_CONTAINER_ID;
+  if (!containerId || containerId === 'GTM-XXXXXXX') {
+    console.warn('[GTM] Container ID not configured — skipping load.');
+    return;
+  }
+  gtmLoaded = true;
+  // Standard GTM snippet, inlined so we can gate it on consent.
+  (function (w, d, s, l, i) {
+    w[l] = w[l] || [];
+    w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+    var f = d.getElementsByTagName(s)[0];
+    var j = d.createElement(s);
+    var dl = l !== 'dataLayer' ? '&l=' + l : '';
+    j.async = true;
+    j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+    f.parentNode.insertBefore(j, f);
+  })(window, document, 'script', 'dataLayer', containerId);
+}
+
 function handleConsentClick(state) {
   storeConsent(state);
   hideBanner();
+  if (state === 'accepted') loadGTM();
 }
 
 function initConsent() {
   var stored = getStoredConsent();
   var reopen = qs('#cookie-preferences-btn');
 
-  if (stored === 'accepted' || stored === 'rejected') {
+  if (stored === 'accepted') {
+    if (reopen) reopen.hidden = false;
+    loadGTM();
+  } else if (stored === 'rejected') {
     if (reopen) reopen.hidden = false;
   } else {
     showBanner();
